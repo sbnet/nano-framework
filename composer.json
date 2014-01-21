@@ -10,8 +10,7 @@
 
     "require": {
         "php": ">=5.3.3",
-        "monolog/monolog": "~1.2",
-        "atoum/atoum": "dev-master"
+        "monolog/monolog": "~1.2"
     },
 
     "autoload": {
