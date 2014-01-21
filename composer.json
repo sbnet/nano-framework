@@ -1,0 +1,24 @@
+{
+    "name": "sbnet/nano-framework",
+    "type": "library",
+    "description": "The Nano Framework",
+    "homepage": "http://www.nano-framework.com",
+    "license": "GPL-2.0",
+    "authors": [
+        {"name": "Stéphane BRUN", "email": "stephane@sbnet.fr"}
+    ],
+
+    "require": {
+        "php": ">=5.3.3",
+        "monolog/monolog": "~1.2",
+        "atoum/atoum": "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "NanoFramework\\": "libs/",
+            "Scripts\\": "scripts/",
+            "Tests\\": "tests/"
+        }
+    },
+}
