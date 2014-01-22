@@ -15,8 +15,8 @@ class Route
     private static $_instance;
 
     protected $routes;
-    protected $route_config;  
-   
+    protected $route_config;
+
     public static function get_instance()
     {
         if(is_null(static::$_instance))
@@ -26,22 +26,22 @@ class Route
         }
         return static::$_instance;
     }
-   
+
     public function __construct()
     {
     }
-       
+
     /**
     * Get the route configuration object
     */
     public function get_route_config()
-    {   
+    {
         if(!$this->route_config)
         {
             include(DIR_CONFIG.'route.php');
             $this->set_route_config($_ROUTE);
         }
-    
+
         return $this->route_config;
     }
 
@@ -49,7 +49,7 @@ class Route
     * Set the route configuration object
     */
     public function set_route_config($route)
-    {   
+    {
         $this->route_config = $route;
     }
 
@@ -73,7 +73,7 @@ class Route
 
         // Get the route config into $this->route_config
         $this->get_route_config();
-        $module_config = $this->route_config[$GLOBALS['env']['MODULE_NAME']];        
+        $module_config = $this->route_config[$GLOBALS['env']['MODULE_NAME']];
 
 	    // Strip all the parameters after the ? (they are in the $_GET array)
         $query = preg_replace("/\?(.*)$/", '', $url);
@@ -92,13 +92,13 @@ class Route
             $match_reg = "{$route['route']}";
             $match_reg = str_replace('/', '\/', $match_reg);
             $match_reg = "/{$match_reg}$/";
-            
+
             // Match a parameter
             foreach($route_parameters as $route_parameter)
             {
                 $match_reg = str_replace(":{$route_parameter}", "([a-zA-Z0-9_\-=%\.]+)", $match_reg);
             }
-            
+
             // Check if the route matches the url
             if(preg_match($match_reg, $query, $query_parameters))
             {
@@ -130,82 +130,82 @@ class Route
             {
 		        $parameters['controller'] = $variables_array["controller"];
             }
-            else if(isset($current_route["controller"]))  
+            else if(isset($current_route["controller"]))
             {
 		        $parameters['controller'] = $current_route["controller"];
 		    }
 		    else
 		    {
-		        $parameters['controller'] = $module_config["default_controller"];		    
+		        $parameters['controller'] = $module_config["default_controller"];
 		    }
-		    
+
             if(isset($variables_array["action"]))
             {
 		        $parameters['action'] = $variables_array["action"];
             }
-            else if(isset($current_route["action"]))  
+            else if(isset($current_route["action"]))
             {
 		        $parameters['action'] = $current_route["action"];
 		    }
 		    else
 		    {
-		        $parameters['action'] = $module_config["default_action"];		    
+		        $parameters['action'] = $module_config["default_action"];
 		    }
 
-            Seringue::get_instance()->log_nano->addInfo(_("Route found : {$route['route']} -> {$parameters['controller']}/{$parameters['action']}"));		              
-        } 
+            Seringue::get_instance()->log_nano->addInfo(_("Route found : {$route['route']} -> {$parameters['controller']}/{$parameters['action']}"));
+        }
 
         // Mix all parameters together
-		$parameters = array_merge($parameters, $_FILES);   
-		$parameters = array_merge($parameters, $_POST);   
-		$parameters = array_merge($parameters, $_GET);  
+		$parameters = array_merge($parameters, $_FILES);
+		$parameters = array_merge($parameters, $_POST);
+		$parameters = array_merge($parameters, $_GET);
 		$parameters = array_merge($parameters, $variables_array);
 
         // Add the controller's namespace in front of the controller's class
-        $parameters['controller'] = "\\Controllers\\".$parameters['controller'];               
+        $parameters['controller'] = $parameters['controller'];
 
-		return $parameters;    
+		return $parameters;
     }
 
     /**
     * Route encoding
     *
-    * If the url paramter is defined as <route_name>?p=v&p2=v2... then the corresponding 
+    * If the url paramter is defined as <route_name>?p=v&p2=v2... then the corresponding
     * url matching to the route definition will be returned
     *
     * Otherwise, the url parameter will be returned as is.
     *
-    * $module is an optionnal parameter, it defines the module to make the route for, if not defined the 
+    * $module is an optionnal parameter, it defines the module to make the route for, if not defined the
     * current module name will be used
     *
     * @param string $url
-    * @param string $module 
+    * @param string $module
     * @return string url
     */
     public function url($url, $module=null)
-    {        
+    {
         $routes = $this->get_route_config();
-        
+
         if(!$module)
         {
             $module = $GLOBALS['env']['MODULE_NAME'];
         }
         $r = null;
-        
+
         $parts = parse_url($url);
-        
+
         // The url is complete, it starts with http://
         if(isset($parts["scheme"]))
         {
             return $url;
         }
-        
-        $route_name = $parts["path"];                            
+
+        $route_name = $parts["path"];
         if(array_key_exists($route_name, $routes[$module]["routes"]))
         {
             $r = $route = $routes[$module]["routes"][$route_name]["route"];
 
-            $route_parameters = $this->get_parameters($route);            
+            $route_parameters = $this->get_parameters($route);
             if(!is_array($route_parameters))
             {
                 $route_parameters = array();
@@ -217,7 +217,7 @@ class Route
         }
 
         $parameters = array();
-        
+
         if(isset($parts["query"]))
         {
             $p = explode("&", $parts["query"]);
@@ -227,33 +227,33 @@ class Route
                 $parameters[$name] = $value;
             }
         }
-        
+
         // Parameters that are included in the route path
         foreach($route_parameters as $route_parameter)
-        {        
+        {
             if(array_key_exists($route_parameter, $parameters))
             {
-                $r = str_replace(":$route_parameter", urlencode($parameters[$route_parameter]), $r);                        
+                $r = str_replace(":$route_parameter", urlencode($parameters[$route_parameter]), $r);
                 unset($parameters[$route_parameter]);
             }
         }
-                  
+
         // Other parameters
         foreach($parameters as $name=>$parameter)
         {
             if(strpos($r, "?") === false)
             {
-                $r .= "?$name=".urlencode($parameter);                    
+                $r .= "?$name=".urlencode($parameter);
             }
             else
             {
                 $r .= "&$name=".urlencode($parameter);
-            }            
+            }
         }
-            
-        return $r;        
-    } 
-    
+
+        return $r;
+    }
+
     public function get_404($module=null)
     {
         $routes = $this->get_route_config();
@@ -269,11 +269,11 @@ class Route
         }
         return $r;
     }
-    
+
     private function get_parameters($route)
     {
         preg_match_all('/:([a-zA-Z]*)/i', $route, $route_parameters);
- 
-        return $route_parameters[1];            
+
+        return $route_parameters[1];
     }
 }
