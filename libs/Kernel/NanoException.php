@@ -8,49 +8,49 @@ use NanoFramework\Utilities;
 * @package NanoFramework\Kernel
 * @author Stéphane BRUN
 */
-class NanoException extends \Exception 
-{    
+class NanoException extends \Exception
+{
     /**
     * Constructor
-    * @param string $stringException 
+    * @param string $stringException
     * @param integer $levelException http://fr.php.net/manual/fr/ref.errorfunc.php#errorfunc.constants
     */
     function __construct($string, $level=E_NOTICE)
     {
-        parent::__construct($string);   
-        $this->_level = $level; 
-        $this->log = $this->container->log_nano;  
+        parent::__construct($string);
+        $this->_level = $level;
+        $this->log = Seringue::get_instance()->log_nano;
     }
 
     /**
     * Exeception handler
     *
     * @author Stéphane BRUN
-    * @param Exception $exception 
+    * @param Exception $exception
     */
-    static function exception_handler($exception) 
+    static function exception_handler($exception)
     {
         if(isset($exception->_level))
         {
             $db = $exception->getTrace();
-            $file = $db[0]['file'];
-            $line = $db[0]['line'];
-            
+            $file = $db[2]['file'];
+            $line = $db[2]['line'];
+
             switch($exception->_level)
             {
                 case E_NOTICE:
-                    $this->log->addNotice(rtrim("[IN $file AT LINE $line] : ".$exception->getMessage()));
+                    // $this->log->addNotice(rtrim("[IN $file AT LINE $line] : ".$exception->getMessage()));
                 break;
 
                 case E_WARNING:
-                    $this->log->addWarning(rtrim("[IN $file AT LINE $line] : ".$exception->getMessage()));
+                    // $this->log->addWarning(rtrim("[IN $file AT LINE $line] : ".$exception->getMessage()));
                 break;
-            
+
                 default:
                 case E_ERROR:
                     $message  = "[IN $file AT LINE $line] : ".$exception->getMessage();
                     $message .= self::get_trace($exception->getTrace());
-                    $this->log->addError(rtrim($message));
+                    // $this->log->addError(rtrim($message));
                     die(nl2br($message));
                 break;
             }
@@ -60,11 +60,11 @@ class NanoException extends \Exception
             die($exception->getMessage());
         }
     }
-    
+
     /**
     * Get the trace reformatted in html
     *
-    * @author Guillaume Hocine & Adrian Galewski http://www.arfooo.com/ 
+    * @author Guillaume Hocine & Adrian Galewski http://www.arfooo.com/
     * @param array $traceArr An array of the backtrace the one returned by $exception->getTrace()
     */
     private static function get_trace($traceArr)
@@ -76,21 +76,21 @@ class NanoException extends \Exception
         $traceArr = array_reverse($traceArr);
         $tabs = 0;
 
-        foreach($traceArr as $arr) 
+        foreach($traceArr as $arr)
         {
-            for($i = 0; $i < $tabs; $i++) 
+            for($i = 0; $i < $tabs; $i++)
             {
                 $s .= '&nbsp; ';
             }
             $s .= "";
             $tabs++;
             $s .= '<font face="Courier New,Courier">';
-            if(isset($arr['class'])) 
+            if(isset($arr['class']))
             {
                 $s .= "<font color=yellow><b>" . $arr['class'] . '</b></font><font color=#AAAAAA>-></font>';
             }
             $args = array();
-            if(!empty($arr['args'])) 
+            if(!empty($arr['args']))
             {
                 foreach ($arr['args'] as $v) {
                     if (is_null($v)) {
@@ -128,6 +128,5 @@ class NanoException extends \Exception
         }
         $s .= '</pre>';
         return $s;
-    }    
+    }
 }
-set_exception_handler(array('NanoFramework\Kernel\NanoException', 'exception_handler'));

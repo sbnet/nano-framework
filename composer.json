@@ -5,7 +5,11 @@
     "homepage": "http://www.nano-framework.com",
     "license": "GPL-2.0",
     "authors": [
-        {"name": "Stéphane BRUN", "email": "stephane@sbnet.fr"}
+        {
+            "name": "Stephane BRUN",
+            "email": "stephane@sbnet.fr",
+            "homepage": "http://www.sbnet.fr"
+        }
     ],
 
     "require": {
