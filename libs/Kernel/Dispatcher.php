@@ -250,6 +250,7 @@ class Dispatcher extends Event\Observable
                 {
                     throw new NanoException(_("The view engine {$this->view_engine_class} doesn't exists !"), E_ERROR);
                 }
+
                 $this->set_controller(new $controller_name($view, $this->container));
 
                 // Render the view only if the action hasn't returned false
@@ -257,7 +258,7 @@ class Dispatcher extends Event\Observable
                 if($x !== false)
                 {
                     // Remove the \Controllers namespace to find the correct view file
-                    $controller_name = str_replace("\\Controllers\\", "", $controller_name);
+                    // $controller_name = str_replace("\\Controllers\\", "", $controller_name);
 
                     $content = $this->controller->view->render($controller_name, $this->action);
                     if(!empty($content))
@@ -266,7 +267,7 @@ class Dispatcher extends Event\Observable
                     }
                     else // No view
                     {
-                        throw new NanoException(_("No view found for $module_name/$controller_name/{$this->action}"), E_ERROR);
+                        throw new NanoException(_("No view found for $controller_name => {$this->action}"), E_ERROR);
                     }
                 }
             }

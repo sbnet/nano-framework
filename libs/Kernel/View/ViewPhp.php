@@ -8,24 +8,24 @@ use NanoFramework\Utilities;
 *
 * @package NanoFramework\Kernel\View
 * @author Stéphane BRUN <stephane.brun@sbnet.fr>
-* @version 0.0.1 
+* @version 0.0.1
 * @version 0.0.2 Seringue support
 */
 class ViewPhp extends Kernel\Event\Observable implements iViewEngine
 {
-    protected $layout; 
-    protected $view_name;   
-    
+    protected $layout;
+    protected $view_name;
+
     private $request;
     private $response;
     private $flash;
     private $route;
     private $security;
     protected $seringue;
-    
+
     public function __construct($layout, $seringue)
     {
-        $this->layout = $this->set_layout($layout);        
+        $this->layout = $this->set_layout($layout);
         $this->request = Kernel\Request::get_instance();
         $this->response = Kernel\Response::get_instance();
         $this->flash = Utilities\Flash::get_instance();
@@ -34,24 +34,24 @@ class ViewPhp extends Kernel\Event\Observable implements iViewEngine
 
         $this->seringue = $seringue;
     }
-    
+
     public function __get($name)
-    {  
-        return $this->$name;      
+    {
+        return $this->$name;
     }
 
     public function __set($name, $value)
-    {        
+    {
         $this->$name = $value;
     }
 
     public function __isset($name)
-    {        
+    {
         return isset($this->$name);
     }
 
     public function __unset($name)
-    {        
+    {
         unset($this->$name);
     }
 
@@ -65,7 +65,7 @@ class ViewPhp extends Kernel\Event\Observable implements iViewEngine
         $this->layout = $layout;
         return true;
     }
-    
+
     /**
     * Set the view name
     *
@@ -86,20 +86,21 @@ class ViewPhp extends Kernel\Event\Observable implements iViewEngine
     */
     public function _render($controller, $action, $no_layout=false)
     {
+
         if(isset($this->view_name))
         {
-            $view_file = $GLOBALS['env']['DIR_VIEWS'].$controller.'/'.$this->view_name.'.php';
+            $view_file = $this->get_controller_view_path($controller).'/'.$this->view_name.'.php';
         }
         else
         {
-            $view_file = $GLOBALS['env']['DIR_VIEWS'].$controller.'/'.$action.'.php';
+            $view_file = $this->get_controller_view_path($controller).'/'.$action.'.php';
         }
-        
+
         // No layout for ajax calls and response of types different to html
         if($this->request->is_ajax() || ($this->response->get_current_type()!=='html'))
         {
-            $this->layout = null;            
-        }        
+            $this->layout = null;
+        }
 
         if(is_file($view_file))
         {
@@ -112,7 +113,7 @@ class ViewPhp extends Kernel\Event\Observable implements iViewEngine
             ob_clean();
 
             // Then put it in the layout if any
-            $layout_file = $GLOBALS['env']['DIR_VIEWS'].'layouts/'.$this->layout.'.php';         
+            $layout_file = $GLOBALS['env']['DIR_VIEWS'].'layouts/'.$this->layout.'.php';
 
             if(is_file($layout_file) and $no_layout==false)
             {
@@ -131,7 +132,14 @@ class ViewPhp extends Kernel\Event\Observable implements iViewEngine
         {
             $full_content = null;
         }
-        
-        return $full_content;    
+
+        return $full_content;
+    }
+
+    private function get_controller_view_path($controller)
+    {
+        $parts = explode("\\", $controller);
+        $path = DIR_APP.$parts[1].DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$parts[3];
+        return $path;
     }
 }
