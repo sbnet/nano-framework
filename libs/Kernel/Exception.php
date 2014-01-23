@@ -8,7 +8,7 @@ use NanoFramework\Utilities;
 * @package NanoFramework\Kernel
 * @author Stéphane BRUN
 */
-class NanoException extends \Exception
+class Exception extends \Exception
 {
     /**
     * Constructor
