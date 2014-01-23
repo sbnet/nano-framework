@@ -32,9 +32,8 @@ class Exception extends \Exception
     {
         if(isset($exception->_level))
         {
-            $db = $exception->getTrace();
-            $file = $db[2]['file'];
-            $line = $db[2]['line'];
+            $file = $exception->getFile();
+            $line = $exception->getLine();
 
             switch($exception->_level)
             {
