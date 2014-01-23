@@ -8,7 +8,7 @@ namespace NanoFramework\Kernel;
 * @author BRUN Stéphane <stephane@sbnet.fr>
 * @version 0.0.1 - 24/11/2007 - BRUN Stéphane
 */
-class Response 
+class Response
 {
     protected static $_instance;
 
@@ -21,14 +21,14 @@ class Response
         'xml'        => 'Content-Type: text/xml',
         'javascript' => 'Content-Type: text/javascript',
         'json'       => 'Content-Type: text/javascript',
-        'text'       => 'Content-Type: text/plain'        
+        'text'       => 'Content-Type: text/plain'
     );
 
     public function __construct()
     {
         $this->_output_type = 'html';
         $this->_output_charset = 'utf-8';
-            
+
         foreach($_COOKIE as $name=>$cookie)
         {
             $this->_cookies[$name]['value'] = $cookie;
@@ -38,13 +38,13 @@ class Response
     public static function get_instance()
     {
         if(is_null(static::$_instance))
-        {               
+        {
             $c = __CLASS__;
             static::$_instance = new $c;
         }
         return static::$_instance;
     }
-    
+
     /**
     * Set a cookie value
     *
@@ -58,7 +58,7 @@ class Response
         $this->_cookies[$name]['expire'] = $expire;
         setcookie($name, $value, $expire);
     }
-    
+
     /**
     * Get a cookie value
     *
@@ -69,7 +69,7 @@ class Response
     {
         return $this->_cookies[$name];
     }
-    
+
     /**
     * Delete a cookie
     *
@@ -99,10 +99,10 @@ class Response
         }
         else
         {
-            throw new NanoException(_('The headers are already sent !'), E_ERROR);
+            throw new Exception(_('The headers are already sent !'), E_ERROR);
         }
     }
- 
+
     /**
     * Check if all the headers are sent.
     *
@@ -112,7 +112,7 @@ class Response
     {
         return headers_sent();
     }
-    
+
     /**
     * Set the output charset
     *
@@ -123,7 +123,7 @@ class Response
     public function set_charset($charset)
     {
         $this->_output_charset = $charset;
-    }    
+    }
 
     /**
     * Set the output type, the default type is the one configured by the server, in most cases it is HTML.
@@ -135,7 +135,7 @@ class Response
     * - json
     * - text
     *
-    * @param string $type 
+    * @param string $type
     * @param string $charset
     */
     public function set_type($type, $charset='')
@@ -143,13 +143,13 @@ class Response
         $this->_output_type = $type;
 
         if(array_key_exists($type, $this->_output_types))
-        {                  
+        {
             if($charset != '')
             {
                 $this->set_charset($charset);
-            }        
+            }
 
-            $this->set_header($this->_output_types[$type].'; charset='.$this->_output_charset); 
+            $this->set_header($this->_output_types[$type].'; charset='.$this->_output_charset);
         }
     }
 
@@ -162,11 +162,11 @@ class Response
     {
         return $this->_output_type;
     }
-    
+
     /**
     * Add some types to the types array. Can also be used to redefine a type, simply add it to the array.
     *
-    * Format : 
+    * Format :
     * <code>
     *   array('name' => 'Content-Type: <type>', ...)
     * </code>
@@ -175,6 +175,6 @@ class Response
     */
     public function add_to_types($types)
     {
-        $this->_output_types = array_merge($this->_output_types, $types); 
-    }    
+        $this->_output_types = array_merge($this->_output_types, $types);
+    }
 }

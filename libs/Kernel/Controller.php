@@ -9,12 +9,12 @@ use NanoFramework\Utilities;
 *
 * @package NanoFramework\Kernel
 * @author Stéphane BRUN <stephane.brun@sbnet.fr>
-* @version 0.0.2 
+* @version 0.0.2
 */
 class Controller extends Event\Observable
 {
     public $dispatcher;
-    public $view;        
+    public $view;
     public $request;
     public $response;
     public $route;
@@ -24,7 +24,7 @@ class Controller extends Event\Observable
     protected $seringue;
     public $page;
     public $log;
-        
+
     public function __construct($view, $seringue)
     {
         $this->view = $view;
@@ -42,14 +42,14 @@ class Controller extends Event\Observable
 
         $this->_init();
     }
-    
+
     /**
     * Just an empty function called at the contruction
     * The trick is that it can be observed
     */
     public function _init()
     {
-    }        
+    }
 
     /**
     * Set a layout for the view
@@ -57,22 +57,8 @@ class Controller extends Event\Observable
     * @param string $layout layout to use
     * @return bool true in case of success
     */
-    public function render_with_layout($layout)
+    public function set_layout($layout)
     {
-        return $this->view->set_layout($layout);
-    }
-    
-    /**
-    * Set a layout for the view
-    *
-    * @deprecated Use render_with_layout() instead
-    * @see NanoFramework\Kernel.Controller#render_with_layout
-    * @param string $layout layout to use
-    * @return bool true in case of success
-    */
-    public function render_with($layout)
-    {
-        throw new NanoFramework\Kernel\NanoException(_("Controller::render_with() is obsolete, use Controller::render_with_layout() instead"), E_WARNING);
         return $this->view->set_layout($layout);
     }
 
@@ -82,7 +68,7 @@ class Controller extends Event\Observable
     * @param string $view_name name view to use
     * @return bool true in case of success
     */
-    public function render_with_view($view_name)
+    public function set_view($view_name)
     {
         return $this->view->set_view_name($view_name);
     }
@@ -94,12 +80,12 @@ class Controller extends Event\Observable
     * @return bool the result of the action, should be true or false, if false then no view will be rendered
     */
     public function _execute($action)
-    {        
+    {
 		if(method_exists($this, $action) || method_exists($this, '_'.$action))
 		{
-            return $this->$action();                
+            return $this->$action();
         }
 
-        throw new NanoException(_("The action $action doesn't exist"), E_ERROR);
-    }   
+        throw new Exception(_("The action $action doesn't exist"), E_ERROR);
+    }
 }

@@ -8,7 +8,7 @@ use NanoFramework\Utilities;
 /**
 * Debug
 */
-function _d($var) 
+function _d($var)
 {
 	Seringue::get_instance()->log_nano->addDebug($var);
 }
@@ -16,7 +16,7 @@ function _d($var)
 /**
 * Info
 */
-function _i($message) 
+function _i($message)
 {
     Seringue::get_instance()->log_nano->addNotice($message);
 }
@@ -24,21 +24,21 @@ function _i($message)
 /**
 * Error
 */
-function _e($var) 
+function _e($var)
 {
-    throw new NanoFramework\Kernel\NanoException(_($var), E_ERROR);
+    throw new NanoFramework\Kernel\Exception(_($var), E_ERROR);
 }
 
 /**
 * Warning
 */
-function _w($message) 
+function _w($message)
 {
     /*
     $db = debug_backtrace();
     $file = $db[1]['file'];
     $line = $db[1]['line'];
-    
+
     Utilities\Log::get_instance()->warning("[IN $file AT LINE $line] : $message");
     */
 }
