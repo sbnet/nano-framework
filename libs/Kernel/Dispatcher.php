@@ -49,7 +49,7 @@ class Dispatcher extends Event\Observable
 
         $this->i18n = Utilities\I18N::get_instance();
 
-        $this->set_view_engine(VIEW_ENGINE);
+        $this->set_view_engine($this->container->configuration['view']['engine']);
 
 
         $this->cache = new Cache\Cache(new Cache\File(DIR_CACHE));
@@ -75,7 +75,7 @@ class Dispatcher extends Event\Observable
     */
     public function set_view_engine($engine)
     {
-        $this->view_engine_class = '\NanoFramework\Kernel\View\View'.$engine;
+        $this->view_engine_class = $engine;
     }
 
     /**
@@ -173,8 +173,7 @@ class Dispatcher extends Event\Observable
         }
         else // Partial not found
         {
-            throw new Exception
-(_("Partial $module/$controller/$action not found"), E_ERROR);
+            throw new Exception(_("Partial $module/$controller/$action not found"), E_ERROR);
         }
 
         // Switch back to the real life
