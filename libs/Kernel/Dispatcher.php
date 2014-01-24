@@ -219,8 +219,7 @@ class Dispatcher extends Event\Observable
         // Check the security access
         if($this->security->access($module_name, $controller_name, $this->action) !== true)
         {
-            throw new Exception
-(_("Not handled security error for $module_name/$controller_name/{$this->action}"), E_ERROR);
+            throw new Exception(_("Not handled security error for $module_name/$controller_name/{$this->action}"), E_ERROR);
         }
 
         // If the caching is active and the action is not in the $not_cached_actions array.
@@ -249,8 +248,7 @@ class Dispatcher extends Event\Observable
                 }
                 else
                 {
-                    throw new Exception
-(_("The view engine {$this->view_engine_class} doesn't exists !"), E_ERROR);
+                    throw new Exception(_("The view engine {$this->view_engine_class} doesn't exists !"), E_ERROR);
                 }
 
                 $this->set_controller(new $controller_name($view, $this->container));
@@ -269,8 +267,7 @@ class Dispatcher extends Event\Observable
                     }
                     else // No view
                     {
-                        throw new Exception
-(_("No view found for $controller_name => {$this->action}"), E_ERROR);
+                        throw new Exception(_("No view found for $controller_name => {$this->action}"), E_ERROR);
                     }
                 }
             }
@@ -386,8 +383,7 @@ class Dispatcher extends Event\Observable
         }
         else
         {
-            throw new Exception
-(_("The controller/action $controller/$action doesn't exist"), E_ERROR);
+            throw new Exception(_("The controller/action $controller/$action doesn't exist"), E_ERROR);
             return false;
         }
 
