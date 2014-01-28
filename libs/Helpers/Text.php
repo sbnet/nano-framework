@@ -1,8 +1,8 @@
 <?php
-namespace Helpers;
+namespace NanoFramework\Helpers;
 
 /**
-* Text manipulations class 
+* Text manipulations class
 *
 * @todo management of more exceptions
 * @package Helpers
@@ -21,17 +21,17 @@ class TextStorage
             'hibou' =>' hiboux',
             'pou' => 'poux',
             'genou'=>'genoux');
-            
+
     public static function get_instance()
     {
         static $_instance;
         if(is_null(self::$_instance))
-        {               
+        {
             $c = __CLASS__;
             self::$_instance = new $c;
         }
         return self::$_instance;
-    }     
+    }
 
     /**
     * Give the purial of a word regarding the quantity
@@ -41,7 +41,7 @@ class TextStorage
     * @param string
     */
     public function pluralize($number, $word)
-    {        
+    {
         if($number > 1)
         {
             if(array_key_exists($word, $this->exceptions))
@@ -58,7 +58,7 @@ class TextStorage
             return($word);
         }
     }
-    
+
     /**
     * Replace all the exceptions by the ones given in parameter
     *
@@ -68,7 +68,7 @@ class TextStorage
     */
     public function set_exceptions($exceptions)
     {
-        $this->exceptions = $exceptions;        
+        $this->exceptions = $exceptions;
     }
 
     /**
@@ -113,7 +113,7 @@ class TextStorage
         $text = ereg_replace("\r\n",' ',$text);
         return $text.$end;
     }
-    
+
     public function slug($text)
     {
         return \NanoFramework\Utilities\String::slug($text);
@@ -126,24 +126,24 @@ class TextStorage
 class Text
 {
     static public function pluralize($number, $word)
-    {   
+    {
         return TextStorage::get_instance()->pluralize($number, $word);
     }
-    
+
     static public function set_exceptions($exceptions)
-    {   
+    {
         TextStorage::get_instance()->set_exceptions($exceptions);
     }
-    
+
     static public function truncate($text, $size, $end='...')
     {
         return TextStorage::get_instance()->truncate($text, $size, $end='...');
     }
-        
+
     static public function shorten($text, $size, $end='...')
     {
         return TextStorage::get_instance()->shorten($text, $size, $end='...');
-    }    
+    }
 
     static public function slug($text)
     {
