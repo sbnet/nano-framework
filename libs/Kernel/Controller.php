@@ -51,28 +51,6 @@ class Controller extends Event\Observable
     {
     }
 
-    // /**
-    // * Set a layout for the view
-    // *
-    // * @param string $layout layout to use
-    // * @return bool true in case of success
-    // */
-    // public function set_layout($layout)
-    // {
-    //     return $this->view->set_layout($layout);
-    // }
-
-    // /**
-    // * Set a specific view
-    // *
-    // * @param string $view_name name view to use
-    // * @return bool true in case of success
-    // */
-    // public function set_view($view_name)
-    // {
-    //     return $this->view->set_view_name($view_name);
-    // }
-
     /**
     * Try to run an action
     *
