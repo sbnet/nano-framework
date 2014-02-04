@@ -17,6 +17,10 @@
         "monolog/monolog": "~1.2"
     },
 
+    "require-dev": {
+        "atoum/atoum" : "dev-master"
+    },
+
     "autoload": {
         "psr-4": {
             "NanoFramework\\": "libs/",
