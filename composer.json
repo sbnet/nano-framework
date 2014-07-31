@@ -21,6 +21,8 @@
         "atoum/atoum" : "dev-master"
     },
 
+    "bin": ["bin/nanophp"],
+
     "autoload": {
         "psr-4": {
             "NanoFramework\\": "libs/",
