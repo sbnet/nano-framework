@@ -1,0 +1,120 @@
+<?php
+namespace NanoFramework\Scripts;
+use NanoFramework\System;
+use NanoFramework\Utilities;
+
+$APP_BASE = __DIR__;
+$show_help = false;
+
+// Load the nano kernel
+include $APP_BASE.'/configuration/configuration.php';
+$seringue = NanoFramework\Kernel\Seringue::get_instance();
+
+// Parameters
+if($argc > 1)
+{
+    foreach($argv as $arg)
+    {
+        if(strpos($arg, "--help") !== false)
+        {
+            $show_help = true;
+        }
+    }
+}
+
+$cli = new System\Cli($argc, $argv);
+
+if($cli->argc < 1)
+{
+    need_help();
+    exit(1);
+}
+
+$command = $cli->parameter_value(1);
+
+// If it's a plugin script then it has a : inside it's name
+if(strpos($command, ":") === false)
+{
+    // A nano script
+    $task_file = DIR_SCRIPTS."actions/".$command.".php";
+
+    // User script
+    if(!is_file($task_file))
+    {
+        $task_file = DIR_USER_SCRIPTS.$command.".php";
+        $command_class = dashed_to_camel_task($command).'Task';
+        $command_class = "\\UserScripts\\".$command_class;
+    }
+
+    // Nano script
+    else
+    {
+        $command_class = dashed_to_camel_task($command).'Task';
+        $command_class = "\\Scripts\\".$command_class;
+    }
+}
+else
+{
+    // A plugin script
+    list($plugin, $command) = explode(":", $command);
+    $plugin = ucfirst(dashed_to_camel_task($plugin));
+    $command = ucfirst(dashed_to_camel_task($command));
+
+    $command_class = $command.'Task';
+    $command_class = "\\Plugins\\$plugin\\".$command_class;
+
+    $task_file = DIR_PLUGINS."$plugin/scripts/$command.php";
+}
+
+if(is_file($task_file))
+{
+    // Launch the task
+    include $task_file;
+
+    $cli->out(_("+ Launching the task $command\n"));
+    $task = new $command_class($cli);
+
+    if($show_help)
+    {
+        $task->help();
+    }
+    else
+    {
+        $task->run();
+    }
+}
+else
+{
+    $cli->err(_("! This task ($command) doesn't exist")."\n");
+    need_help();
+    exit(2);
+}
+
+exit(0);
+
+
+function need_help()
+{
+    global $cli;
+
+    $cli->out(_("Nano Framework Version ").NANO_VERSION."\n");
+    $cli->out(_("The current environment is : {$GLOBALS['env']['environment']}")."\n");
+    $cli->out(_("")."\n");
+    $cli->out(_("Please read the manual at www.nano-framework.com")."\n");
+    $cli->out(_("Syntax: nanophp <task> --help")."\n");
+    $cli->out(_("        nanophp --help")."\n");
+}
+
+function dashed_to_camel_task($string)
+{
+    $string = str_replace("_", "-", $string);
+    $tempTab = explode("-", $string);
+
+    $i = 0;
+    $str = "";
+    foreach($tempTab as $key=>$value)
+    {
+        $str .= ucfirst($value);
+    }
+    return $str;
+}
